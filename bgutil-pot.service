@@ -1,0 +1,25 @@
+# Optional YouTube PO token provider for yt-dlp (see README, "PO token provider").
+# The server has no authentication: it must only listen on localhost (the default).
+[Unit]
+Description=bgutil yt-dlp PO token provider 2.0.0
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=potprovider
+Group=potprovider
+WorkingDirectory=/opt/bgutil-ytdlp-pot-provider/server
+ExecStart=/usr/bin/node build/main.js --port 4416
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

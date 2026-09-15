@@ -1,0 +1,45 @@
+[Unit]
+Description=Multi-Platform Video Downloader Telegram bot
+# Start after the network and (if installed) the optional PO token provider
+After=network-online.target bgutil-pot.service
+Wants=network-online.target
+# Stop retrying after 5 crashes in 10 minutes (see "systemctl status video-bot")
+StartLimitIntervalSec=10min
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=videobot
+Group=videobot
+WorkingDirectory=/opt/video-downloader
+EnvironmentFile=/opt/video-downloader/.env
+ExecStart=/opt/video-downloader/venv/bin/python bot.py
+Restart=on-failure
+# Wait longer after each crash in a row: 10 s up to 5 min
+RestartSec=10
+RestartSteps=5
+RestartMaxDelaySec=5min
+# Exit status 78 = configuration problem (missing setting, not logged in):
+# no automatic restart — fix it, then: sudo systemctl start video-bot
+RestartPreventExitStatus=78
+# On stop the bot cancels running downloads and tells users; give it time
+TimeoutStopSec=120
+# Files the bot creates (cache, cookies updates, downloads) are private to it
+UMask=0077
+
+# For a shared server: other services win the CPU when it's busy, and the bot
+# can't take all the memory. There's no bandwidth limit here; set
+# DOWNLOAD_RATE_LIMIT in .env to cap download speed.
+Nice=10
+CPUWeight=10
+MemoryHigh=900M
+MemoryMax=1200M
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

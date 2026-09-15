@@ -1,0 +1,30 @@
+# Optional SSH tunnel for PROXY_URL (see README, "Sites blocked in the server's country").
+# Opens a SOCKS5 proxy on 127.0.0.1:1080 that leaves the internet from another
+# server. Replace TUNNEL_HOST, TUNNEL_PORT and TUNNEL_USER before installing.
+[Unit]
+Description=Multi-Platform Video Downloader SSH tunnel for geo-blocked sites
+After=network-online.target
+Wants=network-online.target
+Before=video-bot.service
+
+[Service]
+Type=simple
+User=videobot
+Group=videobot
+ExecStart=/usr/bin/ssh -N -D 127.0.0.1:1080 \
+    -i /opt/video-downloader/.ssh/tunnel_ed25519 -o IdentitiesOnly=yes \
+    -o UserKnownHostsFile=/opt/video-downloader/.ssh/known_hosts -o StrictHostKeyChecking=yes \
+    -o BatchMode=yes -o ExitOnForwardFailure=yes -o ConnectTimeout=15 \
+    -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o LogLevel=ERROR \
+    -p TUNNEL_PORT TUNNEL_USER@TUNNEL_HOST
+# Reconnect if the connection drops
+Restart=always
+RestartSec=10
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+python-telegram-bot==22.8
+yt-dlp[default,deno,curl-cffi]
+bgutil-ytdlp-pot-provider==2.0.0
+python-dotenv
+pyrogram==2.0.106
+# Fast MTProto encryption for uploads (maintained TgCrypto with prebuilt wheels for current Pythons)
+TgCrypto-pyrofork==1.2.8

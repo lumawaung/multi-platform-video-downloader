@@ -1,0 +1,21 @@
+# Secrets and account sessions
+.env
+*.session
+*.session-journal
+cookies.txt
+
+# Runtime data
+cache.json
+cache.json.tmp
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# SSH tunnel key (video-tunnel.service)
+.ssh/
+
+# macOS
+.DS_Store
